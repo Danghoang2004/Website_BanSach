@@ -1,0 +1,26 @@
+package com.example.web_bansach.module.order.repository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import com.example.web_bansach.module.order.entity.Order;
+
+@Repository
+public interface OrderRepository extends JpaRepository<Order, Long> {
+
+    /**
+     * Lấy danh sách đơn hàng của user (phân trang)
+     */
+    @Query("SELECT o FROM Order o WHERE o.user.id = :userId ORDER BY o.orderDate DESC")
+    Page<Order> findByUserId(@Param("userId") Long userId, Pageable pageable);
+
+    /**
+     * Tìm order của user theo ID
+     */
+    @Query("SELECT o FROM Order o WHERE o.id = :orderId AND o.user.id = :userId")
+    Order findByIdAndUserId(@Param("orderId") Long orderId, @Param("userId") Long userId);
+}
